@@ -19,7 +19,7 @@ ln -s /usr/bin/fdfind /usr/local/bin/fd
 rm -rf /var/lib/apt/lists/*
 EOF
 
-# Install ast-grep (sg), git-delta, eza from GitHub releases
+# Install ast-grep (sg), git-delta from GitHub releases
 RUN <<EOF
 set -e
 ARCH=$(dpkg --print-architecture)
@@ -45,12 +45,7 @@ curl -fsSL "https://github.com/dandavison/delta/releases/download/${LATEST}/delt
 mv "$WORK_DIR/delta-${LATEST}-${TRIPLE}/delta" /usr/local/bin/delta
 rm -rf "$WORK_DIR"
 
-# eza - modern ls replacement
-LATEST=$(curl -fsSL "https://api.github.com/repos/eza-community/eza/releases/latest" | grep '"tag_name"' | cut -d'"' -f4)
-curl -fsSL "https://github.com/eza-community/eza/releases/download/${LATEST}/eza_${TRIPLE}.tar.gz" \
-    | tar -xz -C /usr/local/bin
-
-chmod +x /usr/local/bin/sg /usr/local/bin/delta /usr/local/bin/eza
+chmod +x /usr/local/bin/sg /usr/local/bin/delta
 EOF
 
 # Install GrepAI from GitHub releases

@@ -92,8 +92,22 @@
       "extensions": [
         "anthropic.claude-code",
         "bierner.markdown-mermaid",
+        "bradlc.vscode-tailwindcss",
+        "editorconfig.editorconfig",
+        "humao.rest-client",
+        "mikestead.dotenv",
         "ms-azuretools.vscode-docker",
         "shd101wyy.markdown-preview-enhanced"
+      ]
+    },
+    "jetbrains": {
+      "plugins": [
+        "com.intellij.mermaid",
+        "com.intellij.tailwindcss",
+        "com.jetbrains.restClient",
+        "Docker",
+        "org.editorconfig.editorconfigjetbrains",
+        "ru.adelf.idea.dotenv"
       ]
     }
   },

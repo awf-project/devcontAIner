@@ -14,15 +14,15 @@
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/python:1": {},
     "ghcr.io/devcontainers-extra/features/bun:1": {},
-    "ghcr.io/devcontainers-extra/features/claude-code:1": {},
-    "ghcr.io/stu-bell/devcontainer-features/gemini-cli:0": {},
-    "ghcr.io/schlich/devcontainer-features/playwright:0": {},
     "ghcr.io/jungaretti/features/ripgrep:1": {},
     "ghcr.io/jsburckhardt/devcontainer-features/bat:1": {},
     "ghcr.io/jsburckhardt/devcontainer-features/uv:1": {},
     "ghcr.io/devcontainers-extra/features/fzf:1": {},
     "ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {},
-    "ghcr.io/devcontainers-extra/features/eza:1": {}
+    "ghcr.io/devcontainers-extra/features/eza:1": {},
+    "ghcr.io/awf-project/devcontainer-features/claude-code:1": {},
+    "ghcr.io/stu-bell/devcontainer-features/gemini-cli:0": {},
+    "ghcr.io/schlich/devcontainer-features/playwright:0": {}
   },
   "mounts": [
     {
@@ -32,7 +32,7 @@
     },
     {
       "source": "${localEnv:HOME}/.gitconfig",
-      "target": "/home/vscode/.gitconfig",
+      "target": "/home/vscode/.gitconfig.host",
       "type": "bind",
       "consistency": "cached"
     },
@@ -48,22 +48,6 @@
       "type": "bind"
     },
     {
-      "source": "/usr/local/bin/awf",
-      "target": "/usr/local/bin/awf",
-      "type": "bind",
-      "readonly": true
-    },
-    {
-      "source": "${localEnv:HOME}/.config/awf",
-      "target": "/home/vscode/.config/awf",
-      "type": "bind"
-    },
-    {
-      "source": "${localEnv:HOME}/.local/share/awf",
-      "target": "/home/vscode/.local/share/awf",
-      "type": "bind"
-    },
-    {
       "source": "${localEnv:HOME}/.gemini",
       "target": "/home/vscode/.gemini",
       "type": "bind"
@@ -71,11 +55,6 @@
     {
       "source": "${localEnv:HOME}/.claude.json",
       "target": "/home/vscode/.claude.json",
-      "type": "bind"
-    },
-    {
-      "source": "${localEnv:HOME}/.claude-mem",
-      "target": "/home/vscode/.claude-mem",
       "type": "bind"
     }
   ],
@@ -111,8 +90,8 @@
       ]
     }
   },
-  "onCreateCommand": "npm install -g tree-sitter-cli",
-  "postCreateCommand": "node --version && pnpm --version && bun --version && gh --version && python3 --version && claude --version && gemini --version && docker --version && docker compose version && awf version && grepai version && tree-sitter --version && uv --version && rg --version && bat --version && fzf --version && jq --version && eza --version",
-  "postStartCommand": "bash docker/devcontainer/start-watchers.sh",
+  "onCreateCommand": "bash docker/devcontainer/run-lifecycle.sh on-create",
+  "postCreateCommand": "bash docker/devcontainer/run-lifecycle.sh post-create",
+  "postStartCommand": "bash docker/devcontainer/run-lifecycle.sh post-start",
   "shutdownAction": "stopContainer"
 }

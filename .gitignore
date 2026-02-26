@@ -1,0 +1,6 @@
+# Personal lifecycle overlays — customize devcontainer hooks without committing.
+# Create any of these to extend the corresponding base script:
+#   docker/devcontainer/lifecycle/on-create.local.sh
+#   docker/devcontainer/lifecycle/post-create.local.sh
+#   docker/devcontainer/lifecycle/post-start.local.sh
+docker/devcontainer/lifecycle/*.local.sh

@@ -55,7 +55,6 @@ Configuration:
   - `~/.gitconfig` -> git settings
   - `~/.ssh` -> SSH keys
   - `~/.1password/agent.sock` -> 1Password SSH agent forwarding
-  - AWF CLI: config (`~/.config/awf`), data (`~/.local/share/awf`), binary (`/usr/local/bin/awf`, read-only)
 - Remote env: `SSH_AUTH_SOCK` set to 1Password agent socket, `OLLAMA_HOST` for local AI
 - VS Code extensions: Claude Code, Markdown Mermaid, Docker, Markdown Preview Enhanced
 - `onCreateCommand`: `npm install -g tree-sitter-cli`

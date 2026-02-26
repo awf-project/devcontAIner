@@ -66,10 +66,38 @@ AI tooling:
 
 ### Lifecycle commands
 
-| Phase | Command |
-|-------|---------|
-| `onCreateCommand` | `npm install -g tree-sitter-cli` (needs Node.js Feature) |
-| `postCreateCommand` | Version checks for all tools |
+All hooks are delegated to `run-lifecycle.sh`, which executes a versioned base script and then an optional personal overlay (`.local.sh`, gitignored).
+
+```
+docker/devcontainer/
+├── Dockerfile
+├── run-lifecycle.sh          # hook runner (base + local overlay)
+└── lifecycle/
+    ├── on-create.sh          # gitconfig seed, tree-sitter-cli install
+    ├── post-create.sh        # version checks for all tools
+    └── post-start.sh         # background watchers (grepai watch)
+```
+
+| Phase | Base script | Runs |
+|-------|-------------|------|
+| `onCreateCommand` | `lifecycle/on-create.sh` | Once at container creation |
+| `postCreateCommand` | `lifecycle/post-create.sh` | After create and rebuilds |
+| `postStartCommand` | `lifecycle/post-start.sh` | Every container start |
+
+#### Customizing lifecycle hooks
+
+Create a `.local.sh` file next to the base script to extend it without touching versioned files:
+
+```bash
+# Example: add personal git config after on-create base
+cat > docker/devcontainer/lifecycle/on-create.local.sh << 'EOF'
+#!/bin/bash
+git config --global alias.co checkout
+EOF
+chmod +x docker/devcontainer/lifecycle/on-create.local.sh
+```
+
+The `.local.sh` files are gitignored — they will never be committed accidentally.
 
 ### Bind mounts (host -> container)
 
@@ -82,9 +110,6 @@ AI tooling:
 | `~/.gitconfig` | `/home/vscode/.gitconfig` | Git configuration |
 | `~/.ssh` | `/home/vscode/.ssh` | SSH keys |
 | `~/.1password/agent.sock` | `/home/vscode/.1password/agent.sock` | 1Password SSH agent |
-| `~/.config/awf` | `/home/vscode/.config/awf` | AWF CLI config |
-| `~/.local/share/awf` | `/home/vscode/.local/share/awf` | AWF CLI data |
-| `/usr/local/bin/awf` | `/usr/local/bin/awf` | AWF binary (read-only) |
 
 ## Usage in a new project
 

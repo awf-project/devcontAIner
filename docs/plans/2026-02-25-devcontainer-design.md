@@ -105,7 +105,6 @@ Then open the project folder in VS Code and select "Reopen in Container".
   - `${localEnv:HOME}/.gitconfig` -> `/home/vscode/.gitconfig` (git settings)
   - `${localEnv:HOME}/.ssh` -> `/home/vscode/.ssh` (SSH keys)
   - `${localEnv:HOME}/.1password/agent.sock` -> socket mount (SSH agent forwarding)
-  - AWF CLI: config, data, and binary (read-only)
 - `remoteUser`: `vscode`
 - `remoteEnv`: `SSH_AUTH_SOCK` set to 1Password agent socket, `OLLAMA_HOST` for local AI
 - VS Code extensions: Claude Code, Markdown Mermaid, Docker, Markdown Preview Enhanced

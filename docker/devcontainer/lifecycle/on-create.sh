@@ -12,6 +12,3 @@ if [[ -f /home/vscode/.gitconfig.host ]]; then
   echo "==> gitconfig seeded from host"
 fi
 
-# tree-sitter-cli is installed via npm because the upstream binary requires
-# GLIBC >= 2.39 which is unavailable on Debian Bookworm (2.36).
-npm install -g tree-sitter-cli

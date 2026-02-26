@@ -4,7 +4,3 @@
 
 set -euo pipefail
 
-# GrepAI — watches for file changes and keeps the embeddings index up-to-date.
-# https://yoanbernabeu.github.io/grepai/watch-guide/
-nohup grepai watch > /tmp/grepai-watch.log 2>&1 &
-echo "==> grepai watch started (log: /tmp/grepai-watch.log)"

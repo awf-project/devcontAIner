@@ -21,6 +21,7 @@
     "ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {},
     "ghcr.io/devcontainers-extra/features/eza:1": {},
     "ghcr.io/awf-project/devcontainer-features/claude-code:1": {},
+    "ghcr.io/awf-project/devcontainer-features/rtk:1": {},
     "ghcr.io/stu-bell/devcontainer-features/gemini-cli:0": {},
     "ghcr.io/schlich/devcontainer-features/playwright:0": {
       "browsers": "chromium"

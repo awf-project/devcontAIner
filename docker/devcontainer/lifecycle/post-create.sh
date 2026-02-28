@@ -19,7 +19,6 @@ bat --version
 fzf --version
 jq --version
 eza --version
-tree-sitter --version
 claude --version
 gemini --version
 grepai version

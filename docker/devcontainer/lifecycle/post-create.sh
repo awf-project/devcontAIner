@@ -22,3 +22,9 @@ eza --version
 claude --version
 gemini --version
 grepai version
+
+
+SCRIPTS_DIR="$(cd "$(dirname "$0")/../scripts" && pwd)"
+
+bash "${SCRIPTS_DIR}/rtk/setup.sh"
+bash "${SCRIPTS_DIR}/claude/setup.sh"

@@ -8,46 +8,40 @@
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
       "moby": false
     },
-    "ghcr.io/devcontainers/features/node:1": { 
-      "version": "25" 
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "25"
     },
     "ghcr.io/devcontainers/features/github-cli:1": {},
+
     "ghcr.io/devcontainers/features/python:1": {},
+    "ghcr.io/jsburckhardt/devcontainer-features/uv:1": {},
+
     "ghcr.io/devcontainers-extra/features/bun:1": {},
     "ghcr.io/jungaretti/features/ripgrep:1": {},
     "ghcr.io/jsburckhardt/devcontainer-features/bat:1": {},
-    "ghcr.io/jsburckhardt/devcontainer-features/uv:1": {},
     "ghcr.io/devcontainers-extra/features/fzf:1": {},
     "ghcr.io/eitsupi/devcontainer-features/jq-likes:2": {},
     "ghcr.io/devcontainers-extra/features/eza:1": {},
-    "ghcr.io/awf-project/devcontainer-features/claude-code:1": {},
-    "ghcr.io/awf-project/devcontainer-features/rtk:1": {},
-    "ghcr.io/stu-bell/devcontainer-features/gemini-cli:0": {},
+
     "ghcr.io/schlich/devcontainer-features/playwright:0": {
       "browsers": "chromium"
-    }
+    },
+
+    "ghcr.io/stu-bell/devcontainer-features/gemini-cli:0": {},
+    "ghcr.io/stu-bell/devcontainer-features/claude-code:0": {},
+
+    "ghcr.io/awf-project/devcontainer-features/grepai:1": {},
+    "ghcr.io/awf-project/devcontainer-features/rtk:1": {}
   },
   "mounts": [
     {
-      "source": "${localEnv:HOME}/.claude",
-      "target": "/home/vscode/.claude",
+      "source": "${localEnv:HOME}/.ssh",
+      "target": "/home/vscode/.ssh",
       "type": "bind"
     },
     {
       "source": "${localEnv:HOME}/.gitconfig",
       "target": "/home/vscode/.gitconfig.host",
-      "type": "bind",
-      "consistency": "cached"
-    },
-    {
-      "source": "${localEnv:HOME}/.ssh",
-      "target": "/home/vscode/.ssh",
-      "type": "bind",
-      "consistency": "cached"
-    },
-    {
-      "source": "${localEnv:HOME}/.1password/agent.sock",
-      "target": "/home/vscode/.1password/agent.sock",
       "type": "bind"
     },
     {
@@ -59,16 +53,17 @@
       "source": "${localEnv:HOME}/.claude.json",
       "target": "/home/vscode/.claude.json",
       "type": "bind"
+    },
+    {
+      "source": "${localEnv:HOME}/.claude/.credentials.json",
+      "target": "/home/vscode/.claude/.credentials.json",
+      "type": "bind"
     }
   ],
   "runArgs": [
     "--add-host=host.docker.internal:host-gateway"
   ],
   "remoteUser": "vscode",
-  "remoteEnv": {
-    "SSH_AUTH_SOCK": "/home/vscode/.1password/agent.sock",
-    "OLLAMA_HOST": "http://host.docker.internal:50000"
-  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -84,6 +79,12 @@
       ]
     },
     "jetbrains": {
+      "settings": {
+        "com.intellij:app:EditorSettings.is_ensure_newline_at_eof": true,
+        "com.intellij:app:EditorSettings.keep_trailing_space_on_caret_line": false,
+        "com.intellij:app:HttpConfigurable.use_proxy_pac": true,
+        "com.intellij:app:ProjectViewSharedSettings.showMembers": true
+      },
       "plugins": [
         "com.intellij.mermaid",
         "com.intellij.tailwindcss",

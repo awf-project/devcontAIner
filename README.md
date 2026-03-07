@@ -8,16 +8,21 @@ Hybrid approach: standard runtimes and tools are declared as **Dev Container Fea
 
 ```
 devcontainer.json (Features)     Dockerfile (custom tooling)
-├── Node.js 22 + pnpm           ├── build-essential, curl, jq
-├── Python                      ├── fd, tree, fzf (apt)
-├── Bun                         ├── ast-grep, git-delta, eza (GitHub releases)
-├── gh CLI                      ├── GrepAI (GitHub release)
-├── Claude Code                 ├── tree-sitter grammars
-├── Gemini CLI                  └── tree-sitter config
+├── Node.js 25 + pnpm           ├── build-essential, shellcheck (apt)
+├── Python                      ├── xz-utils, unzip, curl (apt)
+├── Bun                         ├── fd, tree (apt)
+├── gh CLI                      ├── ast-grep (GitHub release)
+├── Claude Code                 └── git-delta (GitHub release)
+├── Gemini CLI
 ├── Playwright + Chromium
 ├── ripgrep
 ├── bat
+├── fzf
+├── jq-likes (jq, yq, xq)
+├── eza
 ├── uv/uvx
+├── GrepAI
+├── RTK
 └── Docker-outside-of-Docker
 ```
 
@@ -28,41 +33,33 @@ devcontainer.json (Features)     Dockerfile (custom tooling)
 | Feature | GHCR ID |
 |---------|---------|
 | Docker-outside-of-Docker | `ghcr.io/devcontainers/features/docker-outside-of-docker:1` |
-| Node.js 22 + pnpm | `ghcr.io/devcontainers/features/node:1` |
+| Node.js 25 + pnpm | `ghcr.io/devcontainers/features/node:1` |
 | GitHub CLI | `ghcr.io/devcontainers/features/github-cli:1` |
 | Python | `ghcr.io/devcontainers/features/python:1` |
 | Bun | `ghcr.io/devcontainers-extra/features/bun:1` |
-| Claude Code | `ghcr.io/devcontainers-extra/features/claude-code:1` |
+| Claude Code | `ghcr.io/stu-bell/devcontainer-features/claude-code:0` |
 | Gemini CLI | `ghcr.io/stu-bell/devcontainer-features/gemini-cli:0` |
 | Playwright + Chromium | `ghcr.io/schlich/devcontainer-features/playwright:0` |
 | ripgrep | `ghcr.io/jungaretti/features/ripgrep:1` |
 | bat | `ghcr.io/jsburckhardt/devcontainer-features/bat:1` |
 | uv/uvx | `ghcr.io/jsburckhardt/devcontainer-features/uv:1` |
+| fzf | `ghcr.io/devcontainers-extra/features/fzf:1` |
+| jq-likes (jq, yq, xq) | `ghcr.io/eitsupi/devcontainer-features/jq-likes:2` |
+| eza | `ghcr.io/devcontainers-extra/features/eza:1` |
+| GrepAI | `ghcr.io/awf-project/devcontainer-features/grepai:1` |
+| RTK | `ghcr.io/awf-project/devcontainer-features/rtk:1` |
 
 ### Dockerfile (custom tooling, cached as Docker layers)
 
-Search and navigation:
-
-| Tool | Binary | Purpose |
-|------|--------|---------|
-| fd-find | `fd` | Fast file finder |
-| ast-grep | `sg` | AST-based code search |
-| fzf | `fzf` | Fuzzy finder |
-| tree | `tree` | Directory structure viewer |
-
-Display and diffs:
-
-| Tool | Binary | Purpose |
-|------|--------|---------|
-| eza | `eza` | Modern `ls` with git status |
-| git-delta | `delta` | Enhanced git diffs |
-
-AI tooling:
-
-| Tool | Binary | Purpose |
-|------|--------|---------|
-| GrepAI | `grepai` | Semantic code search |
-| tree-sitter | `tree-sitter` | Incremental parsing (installed via onCreateCommand) |
+| Tool | Binary | Install method | Purpose |
+|------|--------|----------------|---------|
+| fd-find | `fd` | apt | Fast file finder |
+| tree | `tree` | apt | Directory structure viewer |
+| ast-grep | `sg` | GitHub release | AST-based code search |
+| git-delta | `delta` | GitHub release | Enhanced git diffs |
+| build-essential | — | apt | Compilation toolchain |
+| shellcheck | `shellcheck` | apt | Shell script linter |
+| xz-utils, unzip, curl | — | apt | Archive extraction and downloads |
 
 ### Lifecycle commands
 
@@ -72,10 +69,16 @@ All hooks are delegated to `run-lifecycle.sh`, which executes a versioned base s
 docker/devcontainer/
 ├── Dockerfile
 ├── run-lifecycle.sh          # hook runner (base + local overlay)
-└── lifecycle/
-    ├── on-create.sh          # gitconfig seed, tree-sitter-cli install
-    ├── post-create.sh        # version checks for all tools
-    └── post-start.sh         # background watchers (grepai watch)
+├── lifecycle/
+│   ├── on-create.sh          # gitconfig seed from host mount
+│   ├── post-create.sh        # version checks, RTK + Claude setup
+│   └── post-start.sh         # JetBrains XDG symlinks
+└── scripts/
+    ├── claude/
+    │   ├── setup.sh           # Claude post-create configuration
+    │   └── statusline.sh      # Claude statusline helper
+    └── rtk/
+        └── setup.sh           # RTK post-create configuration
 ```
 
 | Phase | Base script | Runs |
@@ -103,13 +106,11 @@ The `.local.sh` files are gitignored — they will never be committed accidental
 
 | Host path | Container path | Purpose |
 |-----------|----------------|---------|
-| `~/.claude` | `/home/vscode/.claude` | Claude Code config, credentials, plugins, sessions |
 | `~/.claude.json` | `/home/vscode/.claude.json` | Claude Code authentication |
-| `~/.claude-mem` | `/home/vscode/.claude-mem` | Claude memory database |
+| `~/.claude/.credentials.json` | `/home/vscode/.claude/.credentials.json` | Claude Code credentials |
 | `~/.gemini` | `/home/vscode/.gemini` | Gemini CLI config and auth |
-| `~/.gitconfig` | `/home/vscode/.gitconfig` | Git configuration |
+| `~/.gitconfig` | `/home/vscode/.gitconfig.host` | Git configuration (seeded into container on create) |
 | `~/.ssh` | `/home/vscode/.ssh` | SSH keys |
-| `~/.1password/agent.sock` | `/home/vscode/.1password/agent.sock` | 1Password SSH agent |
 
 ## Usage in a new project
 
@@ -137,9 +138,10 @@ Use [devcontainer Features](https://containers.dev/features) in `devcontainer.js
 
 ## Notes
 
-- `~/.claude` is bind-mounted read/write: sessions, memories, and plugins are shared with the host
+- `~/.claude.json` and `~/.claude/.credentials.json` are bind-mounted for authentication
 - `~/.gemini` is bind-mounted read/write: config and auth are shared with the host
-- SSH authentication uses 1Password agent forwarding via socket mount
-- Agent tools from GitHub releases (ast-grep, delta, eza, grepai) are fetched at latest version during build; may hit GitHub API rate limits without auth
+- `~/.gitconfig` is mounted as `.gitconfig.host` and copied into the container on create to avoid bind-mount conflicts
+- SSH keys are bind-mounted directly from the host
+- Agent tools from GitHub releases (ast-grep, delta) are fetched at latest version during build; may hit GitHub API rate limits without auth
 - Features are applied after the Dockerfile build; the Dockerfile cannot use tools installed by Features
 - Community Features (v0.x) may break; fallback is to move the install back into the Dockerfile
